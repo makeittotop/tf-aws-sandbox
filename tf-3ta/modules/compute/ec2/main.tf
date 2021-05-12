@@ -17,13 +17,13 @@ module "ec2" {
   source  = "terraform-aws-modules/ec2-instance/aws"
   version = "2.18.0"
 
-  instance_count = 1
-
+  instance_count = var.instance_count
   key_name      = var.key_name
   name          = var.name
   ami           = data.aws_ami.latest-ubuntu.id
   instance_type = var.instance_type
   subnet_id     = var.subnet_id
+  #subnet_ids    = var.subnet_ids
   vpc_security_group_ids      = [var.vpc_security_group_ids]
   associate_public_ip_address = true
   user_data_base64 = base64encode(var.user_data)

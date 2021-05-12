@@ -40,13 +40,15 @@ module "bastion_host_ec2_key_pair" {
   tags            = local.bastion_host_ec2_key_pair_tags
 }
 
-module "bastion_host1" {
+module "bastion_hosts" {
   source                 = "./modules/compute/ec2"
-  name                   = local.bastion_host_name
+  count                  = length(module.project_vpc.vpc.public_subnets)
+  name                   = format("%s%d", local.bastion_host_name, count.index)
   instance_type          = var.instance_type
-  subnet_id              = module.project_vpc.vpc.public_subnets[0]
+  subnet_id              = module.project_vpc.vpc.public_subnets[count.index]
   vpc_security_group_ids = module.bastion_sg.sg.security_group_id
   user_data              = local.bastion_user_data
   tags                   = local.bastion_host_tags
   key_name               = module.bastion_host_ec2_key_pair.key_pair_key_name
+  #instance_count         = var.instance_count
 }
